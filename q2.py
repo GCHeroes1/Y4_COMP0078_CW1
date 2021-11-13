@@ -6,7 +6,7 @@ from numpy import arange
 from pylab import cm
 import seaborn as sns
 
-variance = 0.07
+std = 0.07
 
 
 def function(x, a):
@@ -128,8 +128,15 @@ def MSE(x_data, y_data, parameters, function):
 if __name__ == '__main__':
 	plot1 = plt.figure(1)
 	x_data = sample(30)
-	noise = np.random.normal(0, variance, x_data.shape)
+	noise = np.random.normal(0, std, x_data.shape)
 	y_data = function(x_data, noise)
+	sns.scatterplot(x=x_data, y=y_data)
+
+	# question 2ai
+	sns.lineplot(x=x_data, y=y_data)
+
+	# question 2aii
+	plot2 = plt.figure(2)
 	sns.scatterplot(x=x_data, y=y_data)
 
 	pars_1, cov_1 = curve_fit(f=degree_1, xdata=x_data, ydata=y_data, bounds=(-np.inf, np.inf))
@@ -191,7 +198,7 @@ if __name__ == '__main__':
 	# MSE_x_Data = (2, 5, 10, 14, 18)
 	print(MSE)
 	MSE_x_Data = arange(0, 18, 1)
-	plot2 = plt.figure(2)
+	plot3 = plt.figure(3)
 	sns.lineplot(x=MSE_x_Data, y=MSE, linewidth=2, color='black')
 	# plt.plot(MSE)
 	# plt.yscale("log")
