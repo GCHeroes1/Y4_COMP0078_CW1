@@ -27,12 +27,12 @@ def cubic(x, a, b, c, d):
 if __name__ == '__main__':
 
     plot1 = plt.figure(1)
-    sns.scatterplot(x_data, y_data)
+    sns.scatterplot(x=x_data, y=y_data)
     pars, cov = curve_fit(f=constant, xdata=x_data, ydata=y_data, bounds=(-np.inf, np.inf))
     sns.lineplot(x_data, constant(x_data, *pars), linestyle='--', linewidth=2, color='black')
 
     plot2 = plt.figure(2)
-    sns.scatterplot(x_data, y_data)
+    sns.scatterplot(x=x_data, y=y_data)
     # pars, cov = curve_fit(f=linear, xdata=x_data, ydata=y_data, bounds=(-np.inf, np.inf))
     # pars, cov = curve_fit(f=exponential, xdata=x_dummy, ydata=y_dummy, p0=[0, 0], bounds=(-np.inf, np.inf))
     # sns.lineplot(x_data, linear(x_data, *pars), linestyle='--', linewidth=2, color='black')
@@ -42,25 +42,25 @@ if __name__ == '__main__':
     print('y = %.5f * x + %.5f' % (a, b))
     x_line = arange(1, 5, 1)
     y_line = linear(x_line, a, b)
-    sns.lineplot(x_line, y_line, linestyle='--', linewidth=2, color='black')
+    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')
 
     plot3 = plt.figure(3)
-    sns.scatterplot(x_data, y_data)
+    sns.scatterplot(x=x_data, y=y_data)
     popt, _ = curve_fit(quadratic, x_data, y_data)
     a, b, c = popt
     print('y = %.5f * x + %.5f * x^2 + %.5f' % (a, b, c))
     x_line = arange(1, 5, 1)
     y_line = quadratic(x_line, a, b, c)
-    sns.lineplot(x_line, y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
+    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
 
     plot4 = plt.figure(4)
-    sns.scatterplot(x_data, y_data)
+    sns.scatterplot(x=x_data, y=y_data)
     popt, _ = curve_fit(cubic, x_data, y_data)
     a, b, c, d = popt
     print('y = %.5f * x + %.5f * x^2 + %.5f + x^3 + %.5f' % (a, b, c, d)) # THIS IS THE SAME AS IN THE BRIEF :D
     x_line = arange(1, 5, 1)
     y_line = cubic(x_line, a, b, c, d)
-    sns.lineplot(x_line, y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
+    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
 
 
 
