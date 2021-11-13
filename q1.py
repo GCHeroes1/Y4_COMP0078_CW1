@@ -40,7 +40,7 @@ if __name__ == '__main__':
     popt, _ = curve_fit(linear, x_data, y_data)
     a, b = popt
     print('y = %.5f * x + %.5f' % (a, b))
-    x_line = arange(1, 5, 1)
+    x_line = arange(1, 5, 0.1)
     y_line = linear(x_line, a, b)
     sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')
 
@@ -49,18 +49,18 @@ if __name__ == '__main__':
     popt, _ = curve_fit(quadratic, x_data, y_data)
     a, b, c = popt
     print('y = %.5f * x + %.5f * x^2 + %.5f' % (a, b, c))
-    x_line = arange(1, 5, 1)
+    x_line = arange(1, 5, 0.1)
     y_line = quadratic(x_line, a, b, c)
-    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
+    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')
 
     plot4 = plt.figure(4)
     sns.scatterplot(x=x_data, y=y_data)
     popt, _ = curve_fit(cubic, x_data, y_data)
     a, b, c, d = popt
     print('y = %.5f * x + %.5f * x^2 + %.5f + x^3 + %.5f' % (a, b, c, d)) # THIS IS THE SAME AS IN THE BRIEF :D
-    x_line = arange(1, 5, 1)
+    x_line = arange(1, 5, 0.1)
     y_line = cubic(x_line, a, b, c, d)
-    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')  # Isn't plotting smooth lines :c
+    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='black')
 
 
 
