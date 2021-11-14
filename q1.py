@@ -1,9 +1,7 @@
 from scipy.optimize import curve_fit
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import arange
-from pylab import cm
 import seaborn as sns
 
 # data = {(1, 3), (2, 2), (3, 0), (4, 5)}
