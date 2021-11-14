@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class PolynomialRegression():
+
+class PolynomialRegression:
 
     def __init__(self, degree, learning_rate=0.01, iterations=10000):
         self.degree = degree
@@ -11,7 +12,7 @@ class PolynomialRegression():
         self.Y = None
         self.m = None
         self.n = None
-        self.W = None
+        self.weights = None
 
     # function to transform X
     def transform(self, X):
@@ -38,16 +39,16 @@ class PolynomialRegression():
 
         if method == 'gd':
             # gradient descent with MSE cost function
-            self.W = np.zeros(self.degree + 1)
+            self.weights = np.zeros(self.degree + 1)
             for i in range(self.iterations):
                 y_hat = self.predict(self.X)
                 error = y_hat - self.Y
 
                 # update weights by derivative of MSE
-                self.W = self.W - self.learning_rate * (2 / self.m) * np.dot(X_transform.T, error)
+                self.weights = self.weights - self.learning_rate * (2 / self.m) * np.dot(X_transform.T, error)
 
         elif method == 'ne':
-            self.W = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
+            self.weights = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
 
         else:
             raise NotImplementedError
@@ -57,7 +58,7 @@ class PolynomialRegression():
     def predict(self, X):
         # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
         X_transform = self.transform(X)
-        return np.dot(X_transform, self.W)
+        return np.dot(X_transform, self.weights)
 
 
 if __name__ == "__main__":
@@ -67,11 +68,9 @@ if __name__ == "__main__":
 
     # model training
     model = PolynomialRegression(degree=3)
-    X_transform = model.transform(X)
-    print(X_transform)
 
     model.fit(X, Y)
-    print(model.W)
+    print(model.weights)
 
     # Prediction on training set
     Y_pred = model.predict(X)

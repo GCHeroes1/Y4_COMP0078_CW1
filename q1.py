@@ -1,29 +1,26 @@
-from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import arange
-import seaborn as sns
+from polynomial_regression import PolynomialRegression
 
-# data = {(1, 3), (2, 2), (3, 0), (4, 5)}
-x_data = [1, 2, 3, 4]
-y_data = [3, 2, 0, 5]
-sns.set_theme()
+x_data = np.array([[1, 2, 3, 4]])
+y_data = np.array([3, 2, 0, 5])
 
 
-def constant(x, a, b):
-    return 1
+def constant(a):
+    return a
 
 
 def linear(x, a, b):
-    return a * x + b
+    return a + (b * x)
 
 
 def quadratic(x, a, b, c):
-    return (a * x) + (b * x ** 2) + c
+    return a + (b * x) + (c * x ** 2)
 
 
 def cubic(x, a, b, c, d):
-    return (a * x) + (b * x ** 2) + (c * x ** 3) + d
+    return a + (b * x) + (c * x ** 2) + (d * x ** 3)
 
 
 def get_y_hats(x_data, objective_function, *args):
@@ -38,55 +35,103 @@ def get_mse(y, y_hat):
     errors = y - y_hat
     squared_errors = np.square(errors)
     mse = sum(squared_errors) / len(squared_errors)
-    return mse
+    return round(mse, 2)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # Fi_1
-    sns.scatterplot(x=x_data, y=y_data)
-    pars, _ = curve_fit(f=constant, xdata=x_data, ydata=y_data)
-    sns.lineplot(x_data, constant(x_data, *pars), linestyle='--', linewidth=2, color='black')
+    plt.scatter(x=[1, 2, 3, 4], y=[3, 2, 0, 5])
 
-    mse = get_mse(y_data, np.array([1, 1, 1, 1]))
-    print(f"MSE for Fi_1: {mse}")
+    ########
+    # Fi_1 #
+    ########
+    print("Fi_1")
+    model_fi_1 = PolynomialRegression(degree=0)
+    model_fi_1.fit(x_data.T, y_data)
+    weights = model_fi_1.weights
+    equation_text = f'y = %.2f' % (weights[0])
+    print(f'Fitted Curve: {equation_text}')
 
-    # Fi_2
-    popt, _ = curve_fit(linear, x_data, y_data)
-    a, b = popt
-    print('y = %.5f * x + %.5f' % (a, b))
-    x_line = arange(1, 4, 0.1)
-    y_line = linear(x_line, a, b)
-    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='blue')
-
-    y_hats = get_y_hats(x_data, linear, a, b)
+    # calculate MSE
+    y_hats = [weights[0] for _ in range(len(x_data[0]))]
     mse = get_mse(y_data, y_hats)
-    print(f"MSE for Fi_2: {mse}")
+    print(f"MSE: {mse}")
 
-    # Fi_3
-    popt, _ = curve_fit(quadratic, x_data, y_data)
-    a, b, c = popt
-    print('y = %.5f * x + %.5f * x^2 + %.5f' % (a, b, c))
+    # Plotting
+    plt.plot(x_data[0], y_hats, label=equation_text + f" ; MSE: {mse}",
+             color='black', linestyle='dashed')
+
+    print("=========")
+
+    ########
+    # Fi_2 #
+    ########
+    print("Fi_2")
+    model_fi_2 = PolynomialRegression(degree=1)
+    model_fi_2.fit(x_data.T, y_data)
+    weights = model_fi_2.weights
+    a, b = weights
+    equation_text = f'%.2f + %.2f X' % (a, b)
+    print(f'Fitted Curve: {equation_text}')
+
+    # calculate MSE
+    y_hats = get_y_hats(x_data[0], linear, a, b)
+    mse = get_mse(y_data, y_hats)
+    print(f"MSE: {mse}")
+
+    # Plotting
+    x_line = arange(1, 4.5, 0.1)
+    y_line = linear(x_line, a, b)
+    plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
+             color='blue', linestyle='dashed')
+
+    print("=========")
+
+    ########
+    # Fi_3 #
+    ########
+    print("Fi_3")
+    model_fi_3 = PolynomialRegression(degree=2)
+    model_fi_3.fit(x_data.T, y_data)
+    weights = model_fi_3.weights
+    a, b, c = weights
+    equation_text = f'%.2f + %.2f X + %.2f X^2' % (a, b, c)
+    print(f'Fitted Curve: {equation_text}')
+
+    # calculate MSE
+    y_hats = get_y_hats(x_data[0], quadratic, a, b, c)
+    mse = get_mse(y_data, y_hats)
+    print(f"MSE: {mse}")
+
+    # Plotting
     x_line = arange(1, 4.5, 0.1)
     y_line = quadratic(x_line, a, b, c)
-    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='red')
+    plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
+             color='green', linestyle='dashed')
 
-    y_hats = get_y_hats(x_data, quadratic, a, b, c)
+    print("=========")
+
+    ########
+    # Fi_4 #
+    ########
+    print("Fi_4")
+    model_fi_4 = PolynomialRegression(degree=3)
+    model_fi_4.fit(x_data.T, y_data)
+    weights = model_fi_4.weights
+    a, b, c, d = weights
+    equation_text = f'%.2f + %.2f X + %.2f X^2 + %.2f X^3' % (a, b, c, d)
+    print(f'Fitted Curve: {equation_text}')
+
+    # calculate MSE
+    y_hats = get_y_hats(x_data[0], cubic, a, b, c, d)
     mse = get_mse(y_data, y_hats)
-    print(f"MSE for Fi_3: {mse}")
+    print(f"MSE: {mse}")
 
-    # Fi_4
-    popt, _ = curve_fit(cubic, x_data, y_data)
-    a, b, c, d = popt
-    print('y = %.5f * x + %.5f * x^2 + %.5f + x^3 + %.5f' % (a, b, c, d))  # THIS IS THE SAME AS IN THE BRIEF :D
+    # Plotting
     x_line = arange(1, 4.5, 0.1)
     y_line = cubic(x_line, a, b, c, d)
-    sns.lineplot(x=x_line, y=y_line, linestyle='--', linewidth=2, color='green', legend='auto')
+    plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
+             color='red', linestyle='dashed')
 
-    y_hats = get_y_hats(x_data, cubic, a, b, c, d)
-    mse = get_mse(y_data, y_hats)
-    print(f"MSE for Fi_4: {mse}")
-
-    plt.title("polynomial fitting for each base of dimension")
-    # TODO: lengend with sns...
+    plt.title("polynomial regression for different base of dimension")
+    plt.legend()
     plt.savefig('./plots/q1a.png')
