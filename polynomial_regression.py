@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 
 class PolynomialRegression:
 
-    def __init__(self, degree, learning_rate=0.01, iterations=10000):
+    def __init__(self, degree, normalize=False, learning_rate=0.01, iterations=10000):
         self.degree = degree
+        self.normalize = normalize
         self.learning_rate = learning_rate
         self.iterations = iterations
         self.X = None
@@ -20,7 +21,6 @@ class PolynomialRegression:
         # initialize X_transform
         X_transform = np.ones((self.m, 1))
 
-        # j = 0
         for j in range(self.degree + 1):
             if j != 0:
                 x_pow = np.power(X, j)
@@ -29,6 +29,10 @@ class PolynomialRegression:
 
         return X_transform
 
+    def do_normalize(self, X):
+        X[:, 1:] = (X[:, 1:] - np.mean(X[:, 1:], axis=0)) / np.std(X[:, 1:], axis=0)
+        return X
+
     # model training
     def fit(self, X, Y, method='ne'):
         self.X = X
@@ -36,6 +40,8 @@ class PolynomialRegression:
 
         # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
         X_transform = self.transform(self.X)
+        if self.normalize:
+            X_transform = self.do_normalize(X_transform)
 
         if method == 'gd':
             # gradient descent with MSE cost function
@@ -58,6 +64,8 @@ class PolynomialRegression:
     def predict(self, X):
         # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
         X_transform = self.transform(X)
+        if self.normalize:
+            X_transform = self.do_normalize(X_transform)
         return np.dot(X_transform, self.weights)
 
 

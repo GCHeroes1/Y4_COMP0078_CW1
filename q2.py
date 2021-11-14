@@ -152,13 +152,12 @@ if __name__ == '__main__':
 
 	X = np.array([x_data]).T
 	Y = np.array(y_data)
-	print(X.shape, Y.shape)
 
 	model_fi_2 = PolynomialRegression(degree=1)
 	model_fi_5 = PolynomialRegression(degree=4)
 	model_fi_10 = PolynomialRegression(degree=9)
 	model_fi_14 = PolynomialRegression(degree=13)
-	model_fi_18 = PolynomialRegression(degree=17)
+	model_fi_18 = PolynomialRegression(degree=17, normalize=True)
 
 	model_fi_2.fit(X, Y)
 	y_hat_2 = model_fi_2.predict(X)
@@ -170,6 +169,16 @@ if __name__ == '__main__':
 	y_hat_14 = model_fi_14.predict(X)
 	model_fi_18.fit(X, Y)
 	y_hat_18 = model_fi_18.predict(X)
+
+	# What K=18 should look like
+	from sklearn.preprocessing import PolynomialFeatures
+	from sklearn.linear_model import LinearRegression
+	poly_feat = PolynomialFeatures(degree=17)
+	poly_x = poly_feat.fit_transform(X)
+	linear_model = LinearRegression()
+	linear_model.fit(poly_x, Y)
+	y_hat_18 = linear_model.predict(poly_x)
+
 
 	plt.plot(x_data, y_hat_2, label="k=2", color='black')
 	plt.plot(x_data, y_hat_5, label="k=5", color='green')

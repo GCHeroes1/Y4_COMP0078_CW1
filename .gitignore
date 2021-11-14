@@ -2,7 +2,6 @@
 .DS_Store
 /venv
 .vscode
-/plots/
 /Boston-filtered.txt
 Boston-filtered.csv
 __pycache__/
