@@ -20,7 +20,7 @@ class PolynomialRegression:
         # initialize X_transform
         X_transform = np.ones((self.m, 1))
 
-        j = 0
+        # j = 0
         for j in range(self.degree + 1):
             if j != 0:
                 x_pow = np.power(X, j)

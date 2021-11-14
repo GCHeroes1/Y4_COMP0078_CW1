@@ -7,30 +7,6 @@ x_data = np.array([[1, 2, 3, 4]])
 y_data = np.array([3, 2, 0, 5])
 
 
-def constant(a):
-    return a
-
-
-def linear(x, a, b):
-    return a + (b * x)
-
-
-def quadratic(x, a, b, c):
-    return a + (b * x) + (c * x ** 2)
-
-
-def cubic(x, a, b, c, d):
-    return a + (b * x) + (c * x ** 2) + (d * x ** 3)
-
-
-def get_y_hats(x_data, objective_function, *args):
-    y_hats = []
-    for x in x_data:
-        y_hats.append(objective_function(x, *args))
-    y_hats = np.array(y_hats)
-    return y_hats
-
-
 def get_mse(y, y_hat):
     errors = y - y_hat
     squared_errors = np.square(errors)
@@ -52,7 +28,7 @@ if __name__ == '__main__':
     print(f'Fitted Curve: {equation_text}')
 
     # calculate MSE
-    y_hats = [weights[0] for _ in range(len(x_data[0]))]
+    y_hats = model_fi_1.predict(x_data.T)
     mse = get_mse(y_data, y_hats)
     print(f"MSE: {mse}")
 
@@ -74,13 +50,13 @@ if __name__ == '__main__':
     print(f'Fitted Curve: {equation_text}')
 
     # calculate MSE
-    y_hats = get_y_hats(x_data[0], linear, a, b)
+    y_hats = model_fi_2.predict(x_data.T)
     mse = get_mse(y_data, y_hats)
     print(f"MSE: {mse}")
 
     # Plotting
     x_line = arange(1, 4.5, 0.1)
-    y_line = linear(x_line, a, b)
+    y_line = model_fi_2.predict(np.array([x_line]).T)
     plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
              color='blue', linestyle='dashed')
 
@@ -98,13 +74,13 @@ if __name__ == '__main__':
     print(f'Fitted Curve: {equation_text}')
 
     # calculate MSE
-    y_hats = get_y_hats(x_data[0], quadratic, a, b, c)
+    y_hats = model_fi_3.predict(x_data.T)
     mse = get_mse(y_data, y_hats)
     print(f"MSE: {mse}")
 
     # Plotting
     x_line = arange(1, 4.5, 0.1)
-    y_line = quadratic(x_line, a, b, c)
+    y_line = model_fi_3.predict(np.array([x_line]).T)
     plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
              color='green', linestyle='dashed')
 
@@ -122,13 +98,13 @@ if __name__ == '__main__':
     print(f'Fitted Curve: {equation_text}')
 
     # calculate MSE
-    y_hats = get_y_hats(x_data[0], cubic, a, b, c, d)
+    y_hats = model_fi_4.predict(x_data.T)
     mse = get_mse(y_data, y_hats)
     print(f"MSE: {mse}")
 
     # Plotting
     x_line = arange(1, 4.5, 0.1)
-    y_line = cubic(x_line, a, b, c, d)
+    y_line = model_fi_4.predict(np.array([x_line]).T)
     plt.plot(x_line, y_line, label=equation_text + f" ; MSE: {mse}",
              color='red', linestyle='dashed')
 
