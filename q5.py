@@ -101,6 +101,26 @@ def five_fold_dataset(data):
 	five.append(data[4*split:5*split])
 	return one, two, three, four, five
 
+def five_fold_validation(data, gamma_values, sigma_values):
+	one, two, three, four, five = five_fold_dataset(data)
+	five_fold_data = [one, two, three, four, five]
+	# need to make predictions with each gamma and sigma value and calculate MSE for each permutation
+	for gamma in gamma_values:
+		for sigma in sigma_values:
+			MSE = 0
+			for i in range (5): #5 fold validation
+				testing_data = five_fold_data[i]
+				training_data = []
+				for j in range (5):
+					if j != i:
+						for data in five_fold_data[j]:
+							training_data.append(data)
+			# now we have the training data and testing data, but need to also split them to get the y value (13th value)
+
+
+
+
+
 if __name__ == '__main__':
 	data = np.arange(9, 18).reshape((3, 3))
 	weight = np.arange(3).reshape((3, 1))
