@@ -108,13 +108,13 @@ def five_fold_validation(data, gamma_values, sigma_values):
 	for gamma in gamma_values:
 		for sigma in sigma_values:
 			MSE = 0
-			for i in range (5): #5 fold validation
+			for i in range(5): #5 fold validation
 				testing_data = five_fold_data[i]
 				training_data = []
-				for j in range (5):
+				for j in range(5):
 					if j != i:
-						for data in five_fold_data[j]:
-							training_data.append(data)
+						for data_ in five_fold_data[j]:
+							training_data.append(data_)
 			# now we have the training data and testing data, but need to also split them to get the y value (13th value)
 
 
