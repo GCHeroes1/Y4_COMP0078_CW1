@@ -92,6 +92,7 @@ if __name__ == '__main__':
 				assert test_data is not None
 				X_test, Y_test = test_data['X_test'], test_data['Y_test']
 				y_hat_test_k = model_fi_k.predict(X_test)
+				print(y_hat_test_k.shape)
 
 				# get test errors
 				mse_test = get_mse(Y_test, y_hat_test_k)
@@ -120,6 +121,7 @@ if __name__ == '__main__':
 	training_error = fit_polynomials_by_bases(bases, get_only_errors=True)
 	plt.plot(bases, training_error)
 	plt.title("Q2b: train error Vs. polynomial dimension")
+	plt.xticks(bases)
 	plt.savefig('./plots/q2b_no_log.png')
 
 	# Plot in log scale
@@ -127,6 +129,7 @@ if __name__ == '__main__':
 
 	plt.plot(bases, training_error)
 	plt.title("Q2b: train error Vs. polynomial dimension (log scale)")
+	plt.xticks(bases)
 	plt.yscale('log')
 	plt.savefig('./plots/q2b_log.png')
 
@@ -148,13 +151,14 @@ if __name__ == '__main__':
 
 	train_errors, test_errors = fit_polynomials_by_bases(bases, get_only_errors=True,
 														 get_test_error=True, test_data=test_data)
-	print(train_errors)
-	print(test_errors)
-	# plot test errors
+
+	# plot both train and test errors
 	plot5 = plt.figure(5)
 
 	plt.plot(bases, train_errors, label='train error', color='blue')
 	plt.plot(bases, test_errors, label='test error', color='green')
 	plt.title("Q2c: test errors")
+	plt.yscale('log')
 	plt.legend()
+	plt.xticks(bases)
 	plt.savefig('./plots/q2c.png')

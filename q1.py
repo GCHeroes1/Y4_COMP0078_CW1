@@ -11,7 +11,7 @@ def get_mse(y, y_hat):
     errors = y - y_hat
     squared_errors = np.square(errors)
     mse = sum(squared_errors) / len(squared_errors)
-    return round(mse, 2)
+    return mse
 
 
 if __name__ == '__main__':
