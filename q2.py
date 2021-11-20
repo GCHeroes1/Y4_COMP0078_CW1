@@ -9,7 +9,7 @@ from q1 import get_mse
 std = 0.07
 
 
-def function(x, epsilon):
+def sin_function(x, epsilon):
 	return np.sin(2 * np.pi * x) ** 2 + epsilon
 
 
@@ -37,13 +37,13 @@ if __name__ == '__main__':
 	x_data = random_sample(n_times=30)
 	# adding noise to the sin graph
 	noise = np.random.normal(0, std, x_data.shape)
-	y_data = function(x_data, noise)
+	y_data = sin_function(x_data, noise)
 	# scatter graph
 	plt.scatter(x=x_data, y=y_data)
 
 	# superimpose sin(2 pi x) ^ 2 without noise
 	x_line = arange(0, 1, 0.005)
-	y_line = function(x_line, 0)
+	y_line = sin_function(x_line, 0)
 	plt.plot(x_line, y_line, color='black', label='sin(2 pi x) ^ 2')
 	plt.legend()
 	plt.title("Q2ai: sin graph with sampled data")
@@ -55,35 +55,53 @@ if __name__ == '__main__':
 	plot2 = plt.figure(2)
 	plt.scatter(x=x_data, y=y_data)
 
-	X = np.array([x_data]).T
-	Y = np.array(y_data)
+	X_train = np.array([x_data]).T
+	Y_train = np.array(y_data)
 
 	color_map = {
 		2: 'green', 5: 'orange', 10: 'black', 14: 'red', 18: 'blue'
 	}
 
 
-	def fit_polynomials_by_bases(base_list: list, get_only_errors=False) -> list:
+	def fit_polynomials_by_bases(base_list: list, get_only_errors=False, get_test_error=False, test_data=None):
 		"""
 		Train polynomialRegression, predict based on trained data, get training error
+
 		:param base_list: list of K's (bases)
 		:param get_only_errors: if True, does not plot a graph
-		:return: training errors (mse) of each bases in list
+		:param get_test_error: bool
+		:param test_data: dictionary with keys 'X_test' and 'Y_test'
+		:return: training errors or both train and test errors of each bases
 		"""
 		train_error = []
+		test_error = []
 		for k in base_list:
-			model_fi_k = PolynomialRegression(degree=k-1)
-			model_fi_k.fit(X, Y)
-			y_hat_k = model_fi_k.predict(X)
+			model_fi_k = PolynomialRegression(degree=k - 1)
+			model_fi_k.fit(X_train, Y_train)
+			y_hat_k = model_fi_k.predict(X_train)
 
 			if not get_only_errors:
 				plt.plot(x_data, y_hat_k, label=f'k={k}', color=color_map[k])
 
 			# Calculate MSE as a training error
-			mse = get_mse(Y, y_hat_k)
+			mse = get_mse(Y_train, y_hat_k)
 			train_error.append(mse)
 
-		return train_error
+			# Predict X_test with the model trained with X_train
+			if get_test_error:
+				assert test_data is not None
+				X_test, Y_test = test_data['X_test'], test_data['Y_test']
+				y_hat_test_k = model_fi_k.predict(X_test)
+
+				# get test errors
+				mse_test = get_mse(Y_test, y_hat_test_k)
+				test_error.append(mse_test)
+
+		if get_test_error:
+			return train_error, test_error
+		else:
+			return train_error
+
 
 	_ = fit_polynomials_by_bases([2, 5, 10, 14, 18])
 
@@ -98,7 +116,7 @@ if __name__ == '__main__':
 	# Plot in Normal scale
 	plot3 = plt.figure(3)
 
-	bases = [x+1 for x in range(18)]
+	bases = [x + 1 for x in range(18)]
 	training_error = fit_polynomials_by_bases(bases, get_only_errors=True)
 	plt.plot(bases, training_error)
 	plt.title("Q2b: train error Vs. polynomial dimension")
@@ -107,8 +125,6 @@ if __name__ == '__main__':
 	# Plot in log scale
 	plot4 = plt.figure(4)
 
-	bases = [x + 1 for x in range(18)]
-	training_error = fit_polynomials_by_bases(bases, get_only_errors=True)
 	plt.plot(bases, training_error)
 	plt.title("Q2b: train error Vs. polynomial dimension (log scale)")
 	plt.yscale('log')
@@ -117,3 +133,28 @@ if __name__ == '__main__':
 	###############
 	# Question 2c #
 	###############
+	# generate a test set (X_test, Y_test) of a thousand points
+	x_test = random_sample(n_times=1000)
+	# adding noise to the sin graph
+	noise = np.random.normal(0, std, x_test.shape)
+	y_test = sin_function(x_test, noise)
+
+	X_test = np.array([x_test]).T
+	Y_test = np.array(y_test)
+	test_data = {
+		'X_test': X_test,
+		'Y_test': Y_test
+	}
+
+	train_errors, test_errors = fit_polynomials_by_bases(bases, get_only_errors=True,
+														 get_test_error=True, test_data=test_data)
+	print(train_errors)
+	print(test_errors)
+	# plot test errors
+	plot5 = plt.figure(5)
+
+	plt.plot(bases, train_errors, label='train error', color='blue')
+	plt.plot(bases, test_errors, label='test error', color='green')
+	plt.title("Q2c: test errors")
+	plt.legend()
+	plt.savefig('./plots/q2c.png')
