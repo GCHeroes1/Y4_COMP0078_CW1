@@ -1,12 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import arange
-import seaborn as sns
 from polynomial_regression import PolynomialRegression
 from sys import exit
 from q1 import get_mse
 
-std = 0.07
+STD = 0.07
 
 
 def sin_function(x, epsilon):
@@ -14,7 +13,9 @@ def sin_function(x, epsilon):
 
 
 def random_sample(n_times):
-	return np.linspace(start=0, stop=1, num=n_times)
+	# return np.random.rand(n_times, 1)
+	return np.random.uniform(0, 1, n_times)
+	# return np.linspace(start=0, stop=1, num=n_times)
 
 
 def MSE(x_data, y_data, parameters, function):
@@ -36,10 +37,11 @@ if __name__ == '__main__':
 	# uniform random sampling
 	x_data = random_sample(n_times=30)
 	# adding noise to the sin graph
-	noise = np.random.normal(0, std, x_data.shape)
+	noise = np.random.normal(0, STD, x_data.shape[0])
 	y_data = sin_function(x_data, noise)
 	# scatter graph
-	plt.scatter(x=x_data, y=y_data)
+	plt.scatter(x_data, y_data)
+	# plt.scatter(x=x_data, y=y_data)
 
 	# superimpose sin(2 pi x) ^ 2 without noise
 	x_line = arange(0, 1, 0.005)
@@ -81,7 +83,11 @@ if __name__ == '__main__':
 			y_hat_k = model_fi_k.predict(X_train)
 
 			if not get_only_errors:
-				plt.plot(x_data, y_hat_k, label=f'k={k}', color=color_map[k])
+				plot_x = np.linspace(0, 1, 200)
+				plot_x = np.array([plot_x]).T
+				plot_y = model_fi_k.predict(plot_x)
+				plt.plot(plot_x, plot_y, label=f'k={k}', color=color_map[k])
+				# plt.plot(x_data, y_hat_k, label=f'k={k}', color=color_map[k])
 
 			# Calculate MSE as a training error
 			mse = get_mse(Y_train, y_hat_k)
@@ -92,7 +98,6 @@ if __name__ == '__main__':
 				assert test_data is not None
 				X_test, Y_test = test_data['X_test'], test_data['Y_test']
 				y_hat_test_k = model_fi_k.predict(X_test)
-				print(y_hat_test_k.shape)
 
 				# get test errors
 				mse_test = get_mse(Y_test, y_hat_test_k)
@@ -139,7 +144,7 @@ if __name__ == '__main__':
 	# generate a test set (X_test, Y_test) of a thousand points
 	x_test = random_sample(n_times=1000)
 	# adding noise to the sin graph
-	noise = np.random.normal(0, std, x_test.shape)
+	noise = np.random.normal(0, STD, x_test.shape[0])
 	y_test = sin_function(x_test, noise)
 
 	X_test = np.array([x_test]).T
@@ -162,3 +167,28 @@ if __name__ == '__main__':
 	plt.legend()
 	plt.xticks(bases)
 	plt.savefig('./plots/q2c.png')
+
+	exit(1)
+	###############
+	# Question 2d #
+	###############
+	# Average of 100 runs
+	train_errors, test_errors = np.zeros(shape=(100, 18)), np.zeros(shape=(100, 18))
+	for i in range(100):
+		# Train set generation
+		x_data = random_sample(n_times=30)
+		noise = np.random.normal(0, STD, x_data.shape)
+		y_data = sin_function(x_data, noise)
+		X_train = np.array([x_data]).T
+		Y_train = np.array(y_data)
+
+		# Test set generation
+		x_test = random_sample(n_times=1000)
+		noise = np.random.normal(0, STD, x_test.shape)
+		y_test = sin_function(x_test, noise)
+		X_test = np.array([x_test]).T
+		Y_test = np.array(y_test)
+		test_data = {
+			'X_test': X_test,
+			'Y_test': Y_test
+		}

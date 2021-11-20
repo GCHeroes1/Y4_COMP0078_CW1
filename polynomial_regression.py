@@ -27,7 +27,7 @@ class PolynomialRegression:
         return X_transform
 
     # model training
-    def fit(self, X, Y, method='ne'):
+    def fit(self, X, Y):
         self.X = X
         self.Y = Y
 
