@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import arange
 from polynomial_regression import PolynomialRegression
-from sys import exit
 from q1 import get_mse
 
 np.random.seed(0)
@@ -13,7 +12,7 @@ color_map = {
 }
 
 
-def sin_function(x, epsilon):
+def sin_squared_function(x, epsilon):
 	return np.sin(2 * np.pi * x) ** 2 + epsilon
 
 
@@ -79,14 +78,14 @@ if __name__ == '__main__':
 	x_data = random_sample(n_times=30)
 	# adding noise to the sin graph
 	noise = np.random.normal(0, STD, x_data.shape[0])
-	y_data = sin_function(x_data, noise)
+	y_data = sin_squared_function(x_data, noise)
 	# scatter graph
 	plt.scatter(x_data, y_data)
 	# plt.scatter(x=x_data, y=y_data)
 
 	# superimpose sin(2 pi x) ^ 2 without noise
 	x_line = arange(0, 1, 0.005)
-	y_line = sin_function(x_line, 0)
+	y_line = sin_squared_function(x_line, 0)
 	plt.plot(x_line, y_line, color='black', label='sin(2 pi x) ^ 2')
 	plt.legend()
 	plt.title("Q2ai: sin graph with sampled data")
@@ -141,7 +140,7 @@ if __name__ == '__main__':
 	x_test = random_sample(n_times=1000)
 	# adding noise to the sin graph
 	noise = np.random.normal(0, STD, x_test.shape[0])
-	y_test = sin_function(x_test, noise)
+	y_test = sin_squared_function(x_test, noise)
 
 	X_test = np.array([x_test]).T
 	Y_test = np.array(y_test)
@@ -185,7 +184,7 @@ if __name__ == '__main__':
 		# Test set generation
 		x_test = random_sample(n_times=1000)
 		noise = np.random.normal(0, STD, x_test.shape[0])
-		y_test = sin_function(x_test, noise)
+		y_test = sin_squared_function(x_test, noise)
 		X_test = np.array([x_test]).T
 		Y_test = np.array(y_test)
 		test_data = {
