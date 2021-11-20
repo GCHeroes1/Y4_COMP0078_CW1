@@ -22,7 +22,7 @@ class PolynomialRegressionWithSinBase(PolynomialRegression):
 		X_transform = np.ones((self.m, self.degree))
 
 		for i in range(self.degree):
-			# phi(x) = sin(i pi x)
+			# transform to sin(k pi x)
 			X_transform[:, i] = np.sin((i + 1) * np.pi * X[:, 0])
 
 		return X_transform
