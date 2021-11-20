@@ -4,11 +4,8 @@ import matplotlib.pyplot as plt
 
 class PolynomialRegression:
 
-    def __init__(self, degree, normalize=False, learning_rate=0.01, iterations=10000):
+    def __init__(self, degree):
         self.degree = degree
-        self.normalize = normalize
-        self.learning_rate = learning_rate
-        self.iterations = iterations
         self.X = None
         self.Y = None
         self.m = None
@@ -29,10 +26,6 @@ class PolynomialRegression:
 
         return X_transform
 
-    def do_normalize(self, X):
-        X[:, 1:] = (X[:, 1:] - np.mean(X[:, 1:], axis=0)) / np.std(X[:, 1:], axis=0)
-        return X
-
     # model training
     def fit(self, X, Y, method='ne'):
         self.X = X
@@ -40,32 +33,15 @@ class PolynomialRegression:
 
         # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
         X_transform = self.transform(self.X)
-        if self.normalize:
-            X_transform = self.do_normalize(X_transform)
 
-        if method == 'gd':
-            # gradient descent with MSE cost function
-            self.weights = np.zeros(self.degree + 1)
-            for i in range(self.iterations):
-                y_hat = self.predict(self.X)
-                error = y_hat - self.Y
-
-                # update weights by derivative of MSE
-                self.weights = self.weights - self.learning_rate * (2 / self.m) * np.dot(X_transform.T, error)
-
-        elif method == 'ne':
-            self.weights = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
-
-        else:
-            raise NotImplementedError
+        self.weights = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
 
         return self
 
     def predict(self, X):
         # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
         X_transform = self.transform(X)
-        if self.normalize:
-            X_transform = self.do_normalize(X_transform)
+
         return np.dot(X_transform, self.weights)
 
 
