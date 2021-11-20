@@ -21,7 +21,8 @@ def random_sample(n_times):
 
 
 def fit_polynomials_by_bases(base_list: list, train_data: dict,
-                             get_only_errors=False, get_test_error=False, test_data: dict = None):
+                             get_only_errors=False, get_test_error=False, test_data: dict = None,
+                             Regression=PolynomialRegression):
 	"""
 	Train polynomialRegression, predict based on trained data, get training error
 
@@ -37,7 +38,7 @@ def fit_polynomials_by_bases(base_list: list, train_data: dict,
 	train_error = []
 	test_error = []
 	for k in base_list:
-		model_fi_k = PolynomialRegression(degree=k - 1)
+		model_fi_k = Regression(degree=k - 1)
 		model_fi_k.fit(X_train, Y_train)
 		y_hat_k = model_fi_k.predict(X_train)
 
