@@ -1,48 +1,48 @@
 Attribute 1
-Average train error: 66.62246636262786
-Average test error: 296.1567401601027
+Average train error: 65.9196403517746
+Average test error: 162.95261075525326
 
 Attribute 2
-Average train error: 69.5719339287862
-Average test error: 89.62330600619843
+Average train error: 68.1848978378144
+Average test error: 92.7661799098311
 
 Attribute 3
-Average train error: 57.36661384955064
-Average test error: 90.67079062483717
+Average train error: 60.76676804322475
+Average test error: 82.22027282216686
 
 Attribute 4
-Average train error: 79.92966137289802
-Average test error: 98.17417511058652
+Average train error: 79.45224381236667
+Average test error: 98.75707649935785
 
 Attribute 5
-Average train error: 61.979149084424385
-Average test error: 94.54500415141801
+Average train error: 69.4676990423903
+Average test error: 78.98793144134429
 
 Attribute 6
-Average train error: 38.68798723872354
-Average test error: 62.603926005808226
+Average train error: 44.790837291952336
+Average test error: 52.78769487232152
 
 Attribute 7
-Average train error: 75.9732074638654
-Average test error: 74.46210068251303
+Average train error: 67.1929145004523
+Average test error: 93.74689440775629
 
 Attribute 8
-Average train error: 72.97807971960258
-Average test error: 102.36809114046056
+Average train error: 77.00166515612536
+Average test error: 97.32278320909727
 
 Attribute 9
-Average train error: 65.25995940865504
-Average test error: 112.03557862039247
+Average train error: 66.57955508661908
+Average test error: 105.73813564346877
 
 Attribute 10
-Average train error: 66.92192530017029
-Average test error: 67.19831024952936
+Average train error: 65.12503221914116
+Average test error: 77.52655812445497
 
 Attribute 11
-Average train error: 63.07937828495689
-Average test error: 69.17801035475563
+Average train error: 63.39565378106222
+Average test error: 65.5358367671034
 
 Attribute 12
-Average train error: 38.401811132943955
-Average test error: 40.92406054408261
+Average train error: 36.79259478522168
+Average test error: 46.89068915826265
 

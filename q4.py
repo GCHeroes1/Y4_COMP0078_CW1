@@ -170,7 +170,50 @@ if __name__ == '__main__':
 			f.write(f"Average test error: {test_error_att_i_mean}\n")
 			f.write("\n")
 
+	del single_attribute_regression_model
+
 	##################
 	# Q4d: Linear Regression using all attributes
 	###################
+	all_att_regressor = PolynomialRegression(need_transform=False)
 
+	train_errors = []
+	test_errors = []
+	for run in range(20):
+		# each run is based on a different (0.66, 0.33) random split
+		train, test = sample_training(data, train_size)
+
+		# Split vertically for X and Y
+		X_train = train[:, :-1]
+		Y_train = train[:, -1]
+		X_test = test[:, :-1]
+		Y_test = test[:, -1]
+
+		# augment with an additional bias term
+		X_train = np.hstack((X_train, np.ones((train_size, 1))))
+		X_test = np.hstack((X_test, np.ones((test_size, 1))))
+
+		# Fit all_att_regressor without transformation
+		all_att_regressor.fit(X_train, Y_train)
+
+		# get predicted result from both train data and test data
+		y_hat_train = all_att_regressor.predict(X_train)
+		y_hat_test = all_att_regressor.predict(X_test)
+
+		# get MSE for each train and test
+		mse_train = get_mse(Y_train, y_hat_train)
+		mse_test = get_mse(Y_test, y_hat_test)
+
+		# log the error for each run
+		train_errors.append(mse_train)
+		test_errors.append(mse_test)
+
+	with open('./logs/q4d.txt', 'w') as f:
+		f.write(f"Train errors (MSE): {str(train_errors)}\n")
+		f.write(f"Average Train error: {np.mean(train_errors)}\n")
+		f.write("\n")
+		f.write(f"Test errors (MSE): {str(test_errors)}\n")
+		f.write(f"Average Test error: {np.mean(test_errors)}\n")
+		f.close()
+
+	del all_att_regressor
