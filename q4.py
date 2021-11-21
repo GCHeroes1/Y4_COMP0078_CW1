@@ -4,8 +4,6 @@ from numpy.linalg import inv
 import random
 from polynomial_regression import PolynomialRegression
 from q1 import get_mse
-import matplotlib.pyplot as plt
-from sys import exit
 import os
 
 
@@ -17,8 +15,6 @@ def get_raw_data() -> np.ndarray:
 
 	return data.values
 
-
-# 4a - Naive Regression
 
 def sample_training(dataset, train_size: int):
 	"""
@@ -46,14 +42,6 @@ def sample_training(dataset, train_size: int):
 				testing_set.append(dataset[i])
 
 	return np.array(training_set), np.array(testing_set)
-
-
-def constant_predictor(X, y):
-	# print(X)
-	# return np.average(X)
-	X_transpose = np.transpose(X)
-	X_inverse = inv(X_transpose * X)
-	return X_inverse
 
 
 if __name__ == '__main__':
