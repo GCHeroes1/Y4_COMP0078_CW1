@@ -20,11 +20,6 @@ import matplotlib.pyplot as plt
 # 	for i in range (start, end+1):
 # 		sum += data[i]
 # 	return sum
-gamma_values = [2 ** (-40), 2 ** (-39), 2 ** (-38), 2 ** (-37), 2 ** (-36), 2 ** (-35), 2 ** (-34), 2 ** (-33),
-                2 ** (-32), 2 ** (-31), 2 ** (-30), 2 ** (-29), 2 ** (-28), 2 ** (-27), 2 ** (-26)]
-sigma_values = [2 ** 7, 2 ** 7.5, 2 ** 8, 2 ** 8.5, 2 ** 9, 2 ** 9.5, 2 ** 10, 2 ** 10.5, 2 ** 11, 2 ** 11.5, 2 ** 12,
-                2 ** 12.5, 2 ** 13]
-
 
 def nested_summation_alphastar(l, alpha, x, y):
     sum = 0
@@ -36,11 +31,9 @@ def nested_summation_alphastar(l, alpha, x, y):
         inner_sum = 0
     return sum
 
-
 def kernelK(x, i, j):
     # request for k_ij is the inner product of x_i and x_j
     return np.inner(x[i - 1], x[j - 1])
-
 
 def kernelKConstruction(x):
     size = len(x)
@@ -49,6 +42,16 @@ def kernelKConstruction(x):
         for j in range(size):
             kernel.append(kernelK(x, i, j))
     return np.reshape(kernel, (size, size))
+
+def gaussianKernelKConstruction(x, sigma):
+    size = len(x)
+    print(size)
+    # kernel = []
+    kernel = np.zeros(shape=(size, size))
+    for i in range(size):
+        for j in range(size):
+            kernel[i][j] = gaussian_kernel(x, i, j, sigma)
+    return kernel
 
 
 def equation_10(n, data, weight, predictions, gamma):
@@ -69,10 +72,10 @@ def equation_11(n, gamma, alpha, x, y):  # alpha star dual optimisation
     return sum_1 + sum_2
 
 
-def calc_alpha_star(x, gamma, n, y):  # alpha star, solved dual
-    kernel = kernelKConstruction(x)
+def calc_alpha_star(x, gamma, n, y, sigma):  # alpha star, solved dual
+    kernel = gaussianKernelKConstruction(x, sigma)
     identity = np.identity(n)
-    part_1 = (kernel + gamma * n * identity).inv
+    part_1 = inv(kernel + gamma * n * identity)
     return part_1.dot(y)
 
 
@@ -88,46 +91,81 @@ def calc_y_test(x, y, gamma, test, n):  # generating y_test
 
 
 def gaussian_kernel(x, i, j, sigma):  # eq 14, the gaussian kernel
-    numerator = numpy.abs(x[i] - x[j]) ** 2
+    # print(type(x))
+    # print(np.size(x))
+    # print(x[i])
+    # print("done")
+    x_ = x[i] - x[j]
+    numerator = numpy.abs(x_) ** 2
     denominator = 2 * (sigma ** 2)
-    return np.exp(-numerator / denominator)
-
+    gaussian = np.exp((-1 * numerator ) / denominator)
+    print("gaussian is ")
+    print(gaussian)
+    return gaussian
 
 def five_fold_dataset(data):
     random.shuffle(data)
     split = math.floor(len(data) / 5)
-    one, two, three, four, five = [], [], [], [], []
-    one.append(data[0: split])
-    two.append(data[split:2 * split])
-    three.append(data[2 * split:3 * split])
-    four.append(data[3 * split:4 * split])
-    five.append(data[4 * split:5 * split])
-    return one, two, three, four, five
-
+    split_data = []
+    split_data.append(data[0: split])
+    split_data.append(data[split:2 * split])
+    split_data.append(data[2 * split:3 * split])
+    split_data.append(data[3 * split:4 * split])
+    split_data.append(data[4 * split:5 * split])
+    return split_data
 
 def five_fold_validation(data, gamma_values, sigma_values):
-    one, two, three, four, five = five_fold_dataset(data)
-    five_fold_data = [one, two, three, four, five]
+    five_fold_data = five_fold_dataset(data)
+    # five_fold_data = [one, two, three, four, five]
     # need to make predictions with each gamma and sigma value and calculate MSE for each permutation
     for gamma in gamma_values:
         for sigma in sigma_values:
             MSE = 0
             for i in range(5):  # 5 fold validation
-                testing_data = five_fold_data[i]
                 training_data = []
                 for j in range(5):
                     if j != i:
                         for data_ in five_fold_data[j]:
                             training_data.append(data_)
         # now we have the training data and testing data, but need to also split them to get the y value (13th value)
+                training_data_y_array = []
+                training_data_x_array = []
+                for z in training_data:
+                    training_data_y_array.append(z[:1])
+                    training_data_x_array.append(z[:-1])
+
+                training_data_x = np.array(training_data_x_array).astype(float)
+                training_data_y = np.array(training_data_y_array).astype(float)
+
+                n = len(training_data_x)
+                alpha_star = calc_alpha_star(training_data_x, gamma, n, training_data_y, sigma)
+                # print(alpha_star)
+
+                testing_data = five_fold_data[i]
 
 
 if __name__ == '__main__':
-    data = np.arange(9, 18).reshape((3, 3))
-    weight = np.arange(3).reshape((3, 1))
-    predictions = np.arange(6, 9).reshape((3, 1))
-    print(data)
-    print(data[1][1])
+    # data = np.arange(9, 18).reshape((3, 3))
+    # weight = np.arange(3).reshape((3, 1))
+    # predictions = np.arange(6, 9).reshape((3, 1))
+    # print(data)
+    # print(data[1][1])
+
+    gamma_values = [2 ** (-40), 2 ** (-39), 2 ** (-38), 2 ** (-37), 2 ** (-36), 2 ** (-35), 2 ** (-34), 2 ** (-33),
+                    2 ** (-32), 2 ** (-31), 2 ** (-30), 2 ** (-29), 2 ** (-28), 2 ** (-27), 2 ** (-26)]
+    sigma_values = [2 ** 7, 2 ** 7.5, 2 ** 8, 2 ** 8.5, 2 ** 9, 2 ** 9.5, 2 ** 10, 2 ** 10.5, 2 ** 11, 2 ** 11.5,
+                    2 ** 12,
+                    2 ** 12.5, 2 ** 13]
+
+    rows = []
+    with open("Boston-filtered.txt", 'r') as file:
+        csvreader = csv.reader(file)
+        header = next(csvreader)
+        for row in csvreader:
+            rows.append(row)
+
+    print(np.array(rows))
+    five_fold_validation(rows, gamma_values, sigma_values)
 # lamb = 5
 # print(data)
 # print(weight)
