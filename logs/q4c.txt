@@ -1,0 +1,48 @@
+Attribute 1
+Average train error: 66.62246636262786
+Average test error: 296.1567401601027
+
+Attribute 2
+Average train error: 69.5719339287862
+Average test error: 89.62330600619843
+
+Attribute 3
+Average train error: 57.36661384955064
+Average test error: 90.67079062483717
+
+Attribute 4
+Average train error: 79.92966137289802
+Average test error: 98.17417511058652
+
+Attribute 5
+Average train error: 61.979149084424385
+Average test error: 94.54500415141801
+
+Attribute 6
+Average train error: 38.68798723872354
+Average test error: 62.603926005808226
+
+Attribute 7
+Average train error: 75.9732074638654
+Average test error: 74.46210068251303
+
+Attribute 8
+Average train error: 72.97807971960258
+Average test error: 102.36809114046056
+
+Attribute 9
+Average train error: 65.25995940865504
+Average test error: 112.03557862039247
+
+Attribute 10
+Average train error: 66.92192530017029
+Average test error: 67.19831024952936
+
+Attribute 11
+Average train error: 63.07937828495689
+Average test error: 69.17801035475563
+
+Attribute 12
+Average train error: 38.401811132943955
+Average test error: 40.92406054408261
+
