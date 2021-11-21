@@ -1,0 +1,3 @@
+MSE on training set with predictor: [8192, 9.094947017729282e-13, 2.4752228156226206e-08] is [2.7006e-08]
+
+MSE on testing set with predictor: [8192, 9.094947017729282e-13, 2.4752228156226206e-08] is [7.46052434e-08]

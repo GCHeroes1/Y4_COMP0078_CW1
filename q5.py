@@ -236,7 +236,7 @@ if __name__ == '__main__':
             rows.append(row)
 
     # print(np.array(rows))
-    plotting, predictor_ = five_fold_validation(rows[:31], gamma_values, sigma_values)
+    plotting, predictor_ = five_fold_validation(rows, gamma_values, sigma_values)
     sigma_points, gamma_points, MSE_points = [], [], []
     for plots in plotting:
         sigma_points.append(plots[0])
@@ -277,10 +277,15 @@ if __name__ == '__main__':
     testingMSE = testing_MSE(training_data_x, training_data_y, predictor_[0], predictor_[1], testing_data_x, testing_data_y)
     # print(trainingMSE)
     # print(testingMSE)
-    print("MSE on training set with predictor:", predictor_, "is", trainingMSE)
-    print("MSE on testing set with predictor:", predictor_, "is,", testingMSE)
+    # print("MSE on training set with predictor:", predictor_, "is", trainingMSE)
+    # print("MSE on testing set with predictor:", predictor_, "is,", testingMSE)
+
+    with open('./logs/q5c.txt', 'w') as f:
+        f.write(f"MSE on training set with predictor: {str(predictor_)} is {str(trainingMSE)}\n")
+        f.write("\n")
+        f.write(f"MSE on testing set with predictor: {str(predictor_)} is {str(testingMSE)}\n")
+        f.close()
 
     ################
     # Question 5d  #
     ################
-    
