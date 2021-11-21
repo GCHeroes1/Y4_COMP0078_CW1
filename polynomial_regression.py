@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 
 class PolynomialRegression:
 
-    def __init__(self, degree):
+    def __init__(self, degree=None, need_transform=True):
         self.degree = degree
+        self.need_transform = need_transform
+        if need_transform:
+            assert degree is not None
         self.X = None
         self.Y = None
         self.m = None
@@ -31,18 +34,22 @@ class PolynomialRegression:
         self.X = X
         self.Y = Y
 
-        # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
-        X_transform = self.transform(self.X)
-
-        self.weights = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
+        if self.need_transform:
+            # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
+            X_transform = self.transform(self.X)
+            self.weights = np.linalg.inv(X_transform.T.dot(X_transform)).dot(X_transform.T).dot(self.Y)
+        else:
+            self.weights = np.linalg.inv(self.X.T.dot(self.X)).dot(self.X.T).dot(self.Y)
 
         return self
 
     def predict(self, X):
-        # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
-        X_transform = self.transform(X)
-
-        return np.dot(X_transform, self.weights)
+        if self.need_transform:
+            # transform X for polynomial h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
+            X_transform = self.transform(X)
+            return np.dot(X_transform, self.weights)
+        else:
+            return np.dot(X, self.weights)
 
 
 if __name__ == "__main__":
