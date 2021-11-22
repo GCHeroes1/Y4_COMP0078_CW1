@@ -2,4 +2,4 @@ scipy
 matplotlib
 seaborn
 numpy
-
+tqdm

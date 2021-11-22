@@ -6,7 +6,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 from polynomial_regression import PolynomialRegression
-
+from tqdm import tqdm
 
 # def argmin(array):
 # argmin returns the indicies of the minimum element
@@ -39,11 +39,11 @@ def kernelK(x, i, j):
 
 def kernelKConstruction(x):
     size = len(x)
-    kernel = []
+    kernel = np.zeros(shape=(size, size))
     for i in range(size):
         for j in range(size):
-            kernel.append(kernelK(x, i, j))
-    return np.reshape(kernel, (size, size))
+            kernel[i][j] = (kernelK(x, i, j))
+    return kernel
 
 
 def gaussian_KernelK_Construction(x, sigma):
@@ -96,12 +96,13 @@ def gaussian_kernel_calc(x_i, x_j, sigma):  # eq 14, the gaussian kernel
     # print(x[i])
     # print("done")
     x_ = x_i - x_j
-    normal = 0
+    # normal = 0
     # numerator = numpy.abs(x_) ** 2
-    for i in x_:
-        normal += i ** 2
-    denominator = 2 * (sigma ** 2)
-    gaussian = np.exp((-1 * normal) / denominator)
+    normal = np.sum(x_ ** 2)
+    # for i in x_:
+    #     normal += i ** 2
+    # denominator = 2 * (sigma ** 2)
+    gaussian = np.exp((-1 * normal) / (2 * (sigma ** 2)))
     # print("gaussian is ")
     # print(gaussian)
     return gaussian
@@ -117,10 +118,12 @@ def five_fold_dataset(data):
 
 def five_fold_validation(data, gamma_values, sigma_values):
     five_fold_data = five_fold_dataset(data)
+    split_size = len(five_fold_data[0])
     predictor = [-1, -1, -1]
     plotting_data = []    # sigma, gamma, MSE to be plotted
     # five_fold_data = [one, two, three, four, five]
     # need to make predictions with each gamma and sigma value and calculate MSE for each permutation
+    # p_bar_gamma = tqdm(len(gamma_values))
     for gamma in gamma_values:
         for sigma in sigma_values:
             average_MSE = 0
@@ -174,6 +177,9 @@ def five_fold_validation(data, gamma_values, sigma_values):
             # print(plotting_data)
             if predictor[2] > average_MSE or predictor[2] == -1:
                 predictor[0], predictor[1], predictor[2] = sigma, gamma, average_MSE[0]
+        # p_bar_gamma.update(1)
+        # p_bar_gamma.refresh()
+
     # print(predictor)
     # print(plotting_data)
     return plotting_data, predictor
@@ -375,6 +381,7 @@ if __name__ == '__main__':
                     2 ** 12, 2 ** 12.5, 2 ** 13]
     training_results = np.zeros((15, 20)) # store the results for each trial in here, for each method
     testing_results = np.zeros((15, 20))
+    p_bar = tqdm(total=20)
     for trial in range(20):
         # print(trials)
         data = q4.get_raw_data()
@@ -399,9 +406,10 @@ if __name__ == '__main__':
         training_results[13][trial] = training_error
         testing_results[13][trial] = testing_error
 
-        #kernel ridge regression
+        # kernel ridge regression
 
-        plotting, predictor_2 = five_fold_validation(data, gamma_values, sigma_values) # only care to get the predictor, best gamma and sigma values
+        plotting, predictor_2 = five_fold_validation(data, gamma_values, sigma_values)
+        # only care to get the predictor, best gamma and sigma values
         training_data_x, training_data_y = split_data(train)
         testing_data_x, testing_data_y = split_data(test)
 
@@ -410,6 +418,8 @@ if __name__ == '__main__':
                                  testing_data_y)
         training_results[14][trial] = trainingMSE
         testing_results[14][trial] = testingMSE
+        p_bar.update(1)
+        p_bar.refresh()
         print("done loop #", trial)
     print(testing_results)
 
