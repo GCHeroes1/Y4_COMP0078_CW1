@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from numpy.linalg import inv
 import random
 from polynomial_regression import PolynomialRegression
 from q1 import get_mse

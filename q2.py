@@ -47,7 +47,6 @@ def fit_polynomials_by_bases(base_list: list, train_data: dict,
 			plot_x = np.array([plot_x]).T
 			plot_y = model_fi_k.predict(plot_x)
 			plt.plot(plot_x, plot_y, label=f'k={k}', color=color_map[k])
-		# plt.plot(x_data, y_hat_k, label=f'k={k}', color=color_map[k])
 
 		# Calculate MSE as a training error
 		mse = get_mse(Y_train, y_hat_k)
@@ -170,17 +169,6 @@ if __name__ == '__main__':
 	# Average of 100 runs
 	train_errors_sum, test_errors_sum = np.zeros(shape=(100, 18)), np.zeros(shape=(100, 18))
 	for i in range(100):
-		# TODO: Why is this not working?
-		# Train set generation
-		# x_data = random_sample(n_times=30)
-		# noise = np.random.normal(0, STD, x_data.shape[0])
-		# y_data = sin_function(x_data, noise)
-		# X_train = np.array([x_data]).T
-		# Y_train = np.array(y_data)
-		# train_data = {
-		# 	'X_train': X_train,
-		# 	'Y_train': Y_train
-		# }
 
 		# Test set generation
 		x_test = random_sample(n_times=1000)
