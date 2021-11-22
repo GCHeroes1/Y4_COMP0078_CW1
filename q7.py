@@ -15,13 +15,13 @@ def sample_with_biased_coin(size: int, k: int):
 
 	# iterate through each datum and set y_i (label) by tossing biased coin
 	for i in range(size):
-		current_train_data = S[:i+1, :]
-		current_x_coor = S[i][0]
-		current_y_coor = S[i][1]
 
 		# we get head side in 80% chance
 		is_head = np.random.uniform(0, 1) < 0.8
 		if is_head:
+			current_train_data = S[:i + 1, :]
+			current_x_coor = S[i][0]
+			current_y_coor = S[i][1]
 			# use knn to get y = h(x)
 			y_i = knn(current_train_data, (current_x_coor, current_y_coor), k)
 		else:
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 	errors_with_k = protocol_a(by_k=BY_K, runs=RUNS)
 	average_errors_by_k = np.average(errors_with_k, axis=0)
 
-	# plot both average train and test errors in log scale
+	# plot k Vs. estimated generalisation error
 	plot1 = plt.figure(1)
 
 	ks = [k for k in range(1, BY_K+1)]
