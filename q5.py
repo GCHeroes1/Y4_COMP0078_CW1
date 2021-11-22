@@ -4,9 +4,8 @@ from numpy.linalg import inv
 import csv
 import random
 import math
-import polynomial_regression as regression
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
+from polynomial_regression import PolynomialRegression
 
 
 # def argmin(array):
@@ -216,76 +215,213 @@ def split_data(data):
     data_y = np.array(data_y_array).astype(float)
     return data_x, data_y
 
+
+def naive_regression(training_data, testing_data, train_size, test_size):
+    naive_regression_model = PolynomialRegression(need_transform=False)
+
+    # Split vertically for X and Y
+    X_train = np.ones((train_size, 1))
+    Y_train = training_data[:, -1]
+    X_test = np.ones((test_size, 1))
+    Y_test = testing_data[:, -1]
+
+    # Fit Naive Regression model without transformation
+    naive_regression_model.fit(X_train, Y_train)
+
+    # get predicted result from both train data and test data
+    y_hat_train = naive_regression_model.predict(X_train)  # (333, 1) -> (333,)
+    y_hat_test = naive_regression_model.predict(X_test)  # (173, 1) -> (173,)
+
+    # get MSE for each train and test
+    mse_train = q4.get_mse(Y_train, y_hat_train)
+    mse_test = q4.get_mse(Y_test, y_hat_test)
+
+    del naive_regression_model
+    return mse_train, mse_test  # these are the MSEs that I need
+
+def single_attribute_regression(training_data, testing_data, train_size, test_size, attribute):    # attribute must go from 0 to 11
+    single_attribute_regression_model = PolynomialRegression(need_transform=False)
+
+    # Split vertically for X and Y
+    X_train = training_data[:, attribute, np.newaxis]
+    X_test = testing_data[:, attribute, np.newaxis]
+    Y_train = training_data[:, -1]
+    Y_test = testing_data[:, -1]
+
+    # augment with an additional bias term
+    X_train = np.hstack((X_train, np.ones((train_size, 1))))
+    X_test = np.hstack((X_test, np.ones((test_size, 1))))
+
+
+    # Fit single attribute Regression model
+    single_attribute_regression_model.fit(X_train, Y_train)
+
+    # get predicted result from both train data and test data
+    y_hat_train = single_attribute_regression_model.predict(X_train)
+    y_hat_test = single_attribute_regression_model.predict(X_test)
+
+    # get MSE for each train and test
+    mse_train = q4.get_mse(Y_train, y_hat_train)
+    mse_test = q4.get_mse(Y_test, y_hat_test)
+    del single_attribute_regression_model
+
+    return mse_train, mse_test
+
+def all_attribute_regression(training_data, testing_data, train_size, test_size):
+    all_att_regressor = PolynomialRegression(need_transform=False)
+
+    # Split vertically for X and Y
+    X_train = training_data[:, :-1]
+    Y_train = training_data[:, -1]
+    X_test = testing_data[:, :-1]
+    Y_test = testing_data[:, -1]
+
+    # augment with an additional bias term
+    X_train = np.hstack((X_train, np.ones((train_size, 1))))
+    X_test = np.hstack((X_test, np.ones((test_size, 1))))
+
+    # Fit all_att_regressor without transformation
+    all_att_regressor.fit(X_train, Y_train)
+
+    # get predicted result from both train data and test data
+    y_hat_train = all_att_regressor.predict(X_train)
+    y_hat_test = all_att_regressor.predict(X_test)
+
+    # get MSE for each train and test
+    mse_train = q4.get_mse(Y_train, y_hat_train)
+    mse_test = q4.get_mse(Y_test, y_hat_test)
+
+    del all_att_regressor
+    return mse_train, mse_test
+
+
 if __name__ == '__main__':
     # data = np.arange(9, 18).reshape((3, 3))
     # weight = np.arange(3).reshape((3, 1))
     # predictions = np.arange(6, 9).reshape((3, 1))
     # print(data)
     # print(data[1][1])
+    #
+    # gamma_values = [2 ** (-40), 2 ** (-39), 2 ** (-38), 2 ** (-37), 2 ** (-36), 2 ** (-35), 2 ** (-34), 2 ** (-33),
+    #                 2 ** (-32), 2 ** (-31), 2 ** (-30), 2 ** (-29), 2 ** (-28), 2 ** (-27), 2 ** (-26)]
+    # sigma_values = [2 ** 7, 2 ** 7.5, 2 ** 8, 2 ** 8.5, 2 ** 9, 2 ** 9.5, 2 ** 10, 2 ** 10.5, 2 ** 11, 2 ** 11.5,
+    #                 2 ** 12, 2 ** 12.5, 2 ** 13]
+    #
+    # rows = []
+    # with open("Boston-filtered.txt", 'r') as file:
+    #     csvreader = csv.reader(file)
+    #     header = next(csvreader)
+    #     for row in csvreader:
+    #         rows.append(row)
+    #
+    # # print(np.array(rows))
+    # plotting, predictor_ = five_fold_validation(rows[:12], gamma_values, sigma_values)
+    # sigma_points, gamma_points, MSE_points = [], [], []
+    # for plots in plotting:
+    #     sigma_points.append(plots[0])
+    #     gamma_points.append(plots[1])
+    #     MSE_points.append(plots[2])
+    # # sigma_points, gamma_points, MSE_points = plotting[0], plotting[1], plotting[2]
+    # # print(sigma_points)
+    # # print(gamma_points)
+    # # print(MSE_points)
+    # # print(predictor_)
+    #
+    # ################
+    # # Question 5b  #
+    # ################
+    # fig = plt.figure()
+    # ax = plt.axes(projection='3d')
+    # ax.set_xlabel('Variance')
+    # ax.set_ylabel('Gamma')
+    # ax.set_zlabel('MSE')
+    # plt.title("Q5b: Cross-validation Error")
+    # ax.scatter3D(sigma_points, gamma_points, MSE_points, label='Cross-validation error')
+    # plt.legend()
+    # plt.savefig('./plots/q5b.png')
+    # # plt.show()
+    #
+    # ################
+    # # Question 5c  #
+    # ################
+    # data = q4.get_raw_data()
+    # train_size = int(data.shape[0] * 0.66)
+    # test_size = data.shape[0] - train_size
+    # # print(f"{train_size} Train sets and {test_size} Test sets")
+    # train, test = q4.sample_training(data, train_size)
+    # training_data_x, training_data_y = split_data(train)
+    # testing_data_x, testing_data_y = split_data(test)
+    #
+    # trainingMSE = training_MSE(training_data_x, training_data_y, predictor_[0], predictor_[1])
+    # testingMSE = testing_MSE(training_data_x, training_data_y, predictor_[0], predictor_[1], testing_data_x, testing_data_y)
+    # # print(trainingMSE)
+    # # print(testingMSE)
+    # # print("MSE on training set with predictor:", predictor_, "is", trainingMSE)
+    # # print("MSE on testing set with predictor:", predictor_, "is,", testingMSE)
+    #
+    # with open('./logs/q5c.txt', 'w') as f:
+    #     f.write(f"MSE on training set with predictor: {str(predictor_)} is {str(trainingMSE)}\n")
+    #     f.write("\n")
+    #     f.write(f"MSE on testing set with predictor: {str(predictor_)} is {str(testingMSE)}\n")
+    #     f.close()
+
+    ################
+    # Question 5d  #
+    ################
 
     gamma_values = [2 ** (-40), 2 ** (-39), 2 ** (-38), 2 ** (-37), 2 ** (-36), 2 ** (-35), 2 ** (-34), 2 ** (-33),
                     2 ** (-32), 2 ** (-31), 2 ** (-30), 2 ** (-29), 2 ** (-28), 2 ** (-27), 2 ** (-26)]
     sigma_values = [2 ** 7, 2 ** 7.5, 2 ** 8, 2 ** 8.5, 2 ** 9, 2 ** 9.5, 2 ** 10, 2 ** 10.5, 2 ** 11, 2 ** 11.5,
                     2 ** 12, 2 ** 12.5, 2 ** 13]
+    training_results = np.zeros((15, 20)) # store the results for each trial in here, for each method
+    testing_results = np.zeros((15, 20))
+    for trial in range(20):
+        # print(trials)
+        data = q4.get_raw_data()
+        train_size = int(data.shape[0] * 0.66)
+        test_size = data.shape[0] - train_size
+        train, test = q4.sample_training(data, train_size)
 
-    rows = []
-    with open("Boston-filtered.txt", 'r') as file:
-        csvreader = csv.reader(file)
-        header = next(csvreader)
-        for row in csvreader:
-            rows.append(row)
+        # naive regression
+        training_error, testing_error = naive_regression(train, test, train_size, test_size)
+        training_results[0][trial] = training_error
+        testing_results[0][trial] = testing_error
 
-    # print(np.array(rows))
-    plotting, predictor_ = five_fold_validation(rows, gamma_values, sigma_values)
-    sigma_points, gamma_points, MSE_points = [], [], []
-    for plots in plotting:
-        sigma_points.append(plots[0])
-        gamma_points.append(plots[1])
-        MSE_points.append(plots[2])
-    # sigma_points, gamma_points, MSE_points = plotting[0], plotting[1], plotting[2]
-    # print(sigma_points)
-    # print(gamma_points)
-    # print(MSE_points)
-    # print(predictor_)
+        # each single attribute
+        # print(training_error)
+        for i in range(1, 13):
+            training_error, testing_error = single_attribute_regression(train, test, train_size, test_size, i - 1)
+            training_results[i][trial] = training_error
+            testing_results[i][trial] = testing_error
+            # print(i)
+        # every attribute
+        training_error, testing_error = all_attribute_regression(train, test, train_size, test_size)
+        training_results[13][trial] = training_error
+        testing_results[13][trial] = testing_error
 
-    ################
-    # Question 5b  #
-    ################
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    ax.set_xlabel('Variance')
-    ax.set_ylabel('Gamma')
-    ax.set_zlabel('MSE')
-    plt.title("Q5b: Cross-validation Error")
-    ax.scatter3D(sigma_points, gamma_points, MSE_points, label='Cross-validation error')
-    plt.legend()
-    plt.savefig('./plots/q5b.png')
-    # plt.show()
+        #kernel ridge regression
 
-    ################
-    # Question 5c  #
-    ################
-    data = q4.get_raw_data()
-    train_size = int(data.shape[0] * 0.66)
-    test_size = data.shape[0] - train_size
-    # print(f"{train_size} Train sets and {test_size} Test sets")
-    train, test = q4.sample_training(data, train_size)
-    training_data_x, training_data_y = split_data(train)
-    testing_data_x, testing_data_y = split_data(test)
+        plotting, predictor_2 = five_fold_validation(data, gamma_values, sigma_values) # only care to get the predictor, best gamma and sigma values
+        training_data_x, training_data_y = split_data(train)
+        testing_data_x, testing_data_y = split_data(test)
 
-    trainingMSE = training_MSE(training_data_x, training_data_y, predictor_[0], predictor_[1])
-    testingMSE = testing_MSE(training_data_x, training_data_y, predictor_[0], predictor_[1], testing_data_x, testing_data_y)
-    # print(trainingMSE)
-    # print(testingMSE)
-    # print("MSE on training set with predictor:", predictor_, "is", trainingMSE)
-    # print("MSE on testing set with predictor:", predictor_, "is,", testingMSE)
+        trainingMSE = training_MSE(training_data_x, training_data_y, predictor_2[0], predictor_2[1])
+        testingMSE = testing_MSE(training_data_x, training_data_y, predictor_2[0], predictor_2[1], testing_data_x,
+                                 testing_data_y)
+        training_results[14][trial] = trainingMSE
+        testing_results[14][trial] = testingMSE
+        print("done loop #", trial)
+    print(testing_results)
 
-    with open('./logs/q5c.txt', 'w') as f:
-        f.write(f"MSE on training set with predictor: {str(predictor_)} is {str(trainingMSE)}\n")
-        f.write("\n")
-        f.write(f"MSE on testing set with predictor: {str(predictor_)} is {str(testingMSE)}\n")
-        f.close()
+    # work out average MSE across trials
 
-    ################
-    # Question 5d  #
-    ################
+    for i in range(len(training_results)):
+        print(i)
+        training_MSE_final = np.sum(training_results[i]) / 20
+        training_SD_final = np.std(training_results[i])
+        testing_MSE_final = np.sum(testing_results[i]) / 20
+        testing_SD_final = np.std(testing_results[i])
+        with open('./logs/q5d.txt', 'w') as f:
+            f.write(f"Method {str(i)} with MSE train {str(training_MSE_final)} with SD {str(training_SD_final)} and MSE test {str(testing_MSE_final)} with SD {str(testing_SD_final)}\n")
+            f.write("\n")
+            f.close()
